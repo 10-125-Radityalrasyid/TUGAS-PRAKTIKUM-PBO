@@ -1,0 +1,100 @@
+import random
+
+
+class Robot:
+    def __init__(self, nama, hp=100, deff=3):
+        self.nama = nama
+        self.hp = hp
+        self.atk = random.randint(5, 25)
+        self.deff = deff
+
+
+    def atk_musuh(self, musuh):
+        base_damage = self.atk
+        damage = base_damage
+        tipe_serangan = "Skill Norm"
+
+
+        if random.random() < 0.27:
+            damage *= 1.2
+            tipe_serangan = "Magical"
+
+
+        chance_defend = random.random() < 0.2
+        if chance_defend:
+            reduced_damage = damage * (1 - musuh.deff / 100)
+            print(f"{self.nama} menyerang dengan {tipe_serangan} || Damage awal: {base_damage} || {musuh.nama} mereduce damage sebesar {musuh.deff}% || Damage yang diterima {musuh.nama} {reduced_damage:.0f}")
+            damage = reduced_damage
+        else:
+            print(f"{self.nama} menyerang dengan {tipe_serangan} || Damage awal: {base_damage} || Damage yang diterima {musuh.nama} {damage:.0f}")
+
+
+        musuh.hp -= damage
+
+
+    def is_alive(self):
+        return self.hp > 0
+
+
+    def status(self):
+        print(f"{self.nama} | HP: {self.hp:.0f} | Deff: {self.deff}%")
+
+
+class Game:
+    def __init__(self, robot1, robot2):
+        self.robot1 = robot1
+        self.robot2 = robot2
+
+
+    def start(self):
+        print("--- Status Robot Awal ---")
+        self.robot1.status()
+        self.robot2.status()
+
+
+        start_game = input("\nApakah Anda ingin bertarung? (gasak/suren): ").lower()
+
+
+        if start_game != "gasak":
+            print("Yahh cupu amat...")
+            return
+
+
+        round = 1
+        while self.robot1.is_alive() and self.robot2.is_alive():
+            print(f"\n--- Round {round} ---")
+
+
+            attacker, defender = (self.robot1, self.robot2) if round % 2 == 1 else (self.robot2, self.robot1)
+
+
+            attacker.atk_musuh(defender)
+
+
+            if not defender.is_alive():
+                print(f"\n{attacker.nama} menang dan {defender.nama} kalah")
+                break
+
+
+            defender.atk_musuh(attacker)
+
+
+            if not attacker.is_alive():
+                print(f"\n{defender.nama} menang {attacker.nama} kalah")
+                break
+
+
+            round += 1
+
+
+if __name__ == "__main__":
+    name1 = "Rusdimus"
+    name2 = "Ambatron"
+
+
+    robot1 = Robot(name1, deff=20)
+    robot2 = Robot(name2, deff=20)
+
+
+    game = Game(robot1, robot2)
+    game.start()
