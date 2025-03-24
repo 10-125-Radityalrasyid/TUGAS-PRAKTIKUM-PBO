@@ -1,0 +1,164 @@
+#Soal Nomor 1
+import math
+
+def hitung_akar_kuadrat():
+    while True:
+        try:
+            angka = input("Masukkan angka: ")
+            angka = float(angka) 
+            
+            if angka < 0:
+                print("Input tidak valid. Harap masukkan angka yang positif.")
+            elif angka == 0:
+                print("Error: Akar kuadrat dari nol tidak diperbolehkan.")
+            else:
+                hasil = math.sqrt(angka)
+                print(f"Akar kuadrat dari {angka} adalah {hasil:.1f}")
+                break 
+        except ValueError:
+            print("Input tidak valid. Harap masukkan angka yang valid.")
+
+# Jalankan program
+hitung_akar_kuadrat()
+
+#Soal No 2
+class TaskNotFoundError(Exception):
+    pass
+
+class InvalidChoiceError(Exception):
+    pass
+
+def show_menu():
+    print("\nPilih aksi:")
+    print("1. Tambah tugas")
+    print("2. Hapus tugas")
+    print("3. Tampilkan daftar tugas")
+    print("4. Keluar")
+
+def add_task(task_list):
+    task = input("Masukkan tugas yang ingin ditambahkan: ").strip()
+    if not task:
+        raise ValueError("Tugas tidak boleh kosong!")
+    task_list.append(task)
+    print("Tugas berhasil ditambahkan!\n")
+
+def remove_task(task_list):
+    try:
+        task_number = int(input("Masukkan nomor tugas yang ingin dihapus: "))
+        if task_number < 1 or task_number > len(task_list):
+            raise TaskNotFoundError(f"Error: Tugas dengan nomor {task_number} tidak ditemukan.")
+        task_list.pop(task_number - 1)
+        print("Tugas berhasil dihapus!\n")
+    except ValueError:
+        print("Error: Masukkan angka yang valid!\n")
+    except TaskNotFoundError as e:
+        print(e, "\n")
+
+def show_tasks(task_list):
+    if not task_list:
+        print("Daftar tugas kosong!\n")
+    else:
+        print("Daftar Tugas:")
+        for i, task in enumerate(task_list, start=1):
+            print(f"{i}. {task}")
+        print("")
+
+def main():
+    task_list = []
+    while True:
+        show_menu()
+        try:
+            choice = input("Masukkan pilihan (1/2/3/4): ").strip()
+            if choice not in {"1", "2", "3", "4"}:
+                raise InvalidChoiceError("Error: Pilihan tidak valid! Pilih 1, 2, 3, atau 4.\n")
+            
+            if choice == "1":
+                add_task(task_list)
+            elif choice == "2":
+                remove_task(task_list)
+            elif choice == "3":
+                show_tasks(task_list)
+            elif choice == "4":
+                print("Keluar dari program.")
+                break
+        except InvalidChoiceError as e:
+            print(e)
+        except ValueError as e:
+            print("Error:", e, "\n")
+
+if __name__ == "__main__":
+    main()
+
+#Soal No 3
+from abc import ABC, abstractmethod
+
+class Animal(ABC):
+    def __init__(self, name, age):
+        self.__name = name 
+        self.__age = age    
+        
+    @abstractmethod
+    def make_sound(self):
+        pass
+    
+    def get_name(self):
+        return self.__name
+    
+    def get_age(self):
+        return self.__age
+
+class Dog(Animal):
+    def make_sound(self):
+        return "Guk! Guk!"
+
+class Cat(Animal):
+    def make_sound(self):
+        return "Miaww!"
+
+class Bird(Animal):
+    def make_sound(self):
+        return "Piyikk!"
+
+class Lion(Animal):
+    def make_sound(self):
+        return "Rawrr!"
+
+class Elephant(Animal):
+    def make_sound(self):
+        return "Wooshhh!"
+
+def create_animal(animal_type, name, age):
+    try:
+        if not name or not isinstance(name, str):
+            raise ValueError("Nama hewan harus berupa string yang tidak kosong.")
+        if not isinstance(age, int) or age < 0:
+            raise ValueError("Usia hewan harus berupa angka positif.")
+        
+        if animal_type.lower() == "anjing":
+            return Dog(name, age)
+        elif animal_type.lower() == "kucing":
+            return Cat(name, age)
+        elif animal_type.lower() == "burung":
+            return Bird(name, age)
+        elif animal_type.lower() == "singa":
+            return Lion(name, age)
+        elif animal_type.lower() == "gajah":
+            return Elephant(name, age)
+        else:
+            raise ValueError("Jenis hewan tidak dikenal.")
+    except ValueError as e:
+        print(f"Error: {e}")
+        return None
+
+# Contoh penggunaan
+animals = [
+    create_animal("anjing", "Doggy", 3),
+    create_animal("kucing", "Catty", 2),
+    create_animal("burung", "Manuk", 1),
+    create_animal("singa", "Singo", 5),
+    create_animal("gajah", "Gede", 10)
+]
+
+for animal in animals:
+    if animal:
+        print(f"{animal.get_name()} ({animal.get_age()} tahun) berbunyi: {animal.make_sound()}")
